@@ -1,0 +1,29 @@
+---
+# tasks file for ansible-role-ehos
+- name: Install and cofigure galaxy-tools
+
+  block:
+
+    - name: Create galaxy-tools group
+      user:
+        name: "{{galaxy_tools_user}}"
+
+    - name: Create galaxy-tools user
+      user:
+        name: "{{galaxy_tools_user}}"
+        group: "{{galaxy_tools_group}}"
+
+    - name: Create galaxy-tools dir
+      file:
+        path: "{{ galaxy_tools_dir }}"
+        state: directory
+        owner: "{{galaxy_tools_user}}"
+        group: "{{galaxy_tools_group}}"
+        mode: 0775
+
+    - name: install
+      pip:
+       name: git+https://github.com/usegalaxy-no/galaxy-tools.git
+       extra_args: --upgrade
+       virtualenv: {{ galaxy_tools_dir }}
+       virtualenv_command: virtualenv-2.7
