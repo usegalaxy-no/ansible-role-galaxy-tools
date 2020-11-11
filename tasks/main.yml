@@ -4,26 +4,23 @@
 
   block:
 
-    - name: Create galaxy-tools group
-      user:
-        name: "{{galaxy_tools_user}}"
+    - name: Install Dependencies
+      package:
+        name:
+          - "gcc"
 
-    - name: Create galaxy-tools user
-      user:
-        name: "{{galaxy_tools_user}}"
-        group: "{{galaxy_tools_group}}"
+    - name: Git checkout of galaxy-tools
+      git:
+        repo: 'https://github.com/usegalaxy-no/galaxy-tools.git'
+        dest: "{{ galaxy_tools_dir }}"
 
-    - name: Create galaxy-tools dir
-      file:
-        path: "{{ galaxy_tools_dir }}"
-        state: directory
-        owner: "{{galaxy_tools_user}}"
-        group: "{{galaxy_tools_group}}"
-        mode: 0775
+    - name: create venv in {{ galaxy_tools_dir }}
+      command:
+        chdir: "{{  galaxy_tools_dir }}"
+        cmd: python3 -m venv venv
+        creates: "{{  galaxy_tools_dir }}/venv"
 
-    - name: install
+    - name: Install specified python requirements for galaxy-tools
       pip:
-       name: git+https://github.com/usegalaxy-no/galaxy-tools.git
-       extra_args: --upgrade
-       virtualenv: {{ galaxy_tools_dir }}
-       virtualenv_command: virtualenv-2.7
+        requirements: "{{  galaxy_tools_dir }}/requirements.txt"
+        virtualenv: "{{  galaxy_tools_dir }}/venv"

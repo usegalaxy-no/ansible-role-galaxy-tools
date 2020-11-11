@@ -1,4 +1,2 @@
 ---
 galaxy_tools_dir: /srv/galaxy-tools
-galaxy_tools_user: galaxy
-galaxy_tools_group: galaxy
